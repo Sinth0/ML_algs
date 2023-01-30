@@ -10,36 +10,38 @@ class dbscan():
     def __init__(self):
         self.labels = None
 
-    def fit(self, data, eps, min_pts):
-
-        def label_pt(pt):
-            X = data[self.labels==-1]
-            self.labels[pt] = n_clusters
-            # recursion over all unlabeled points in eps-distance
-            #pts_in_reach = [distances[pt,]]
+    def fit(self, X, eps, min_pts):
         
-        self.labels = np.ones(data.size[0])*(-1)
-        distances = distance_matrix(X, X)
-        cores = np.argwhere((distances <= eps).sum(axis=0)>min_pts)
-        cores = list(cores.reshape(cores.shape[0]))
-        n_clusters = 0
-        while cores:
-            label_pt(pt=np.random.choice(cores))
-            # remove all labeled data from cores
-            # n_clusters +=1
+        def set_label(x, cores):
 
+            self.labels[x] = n_cluster
+            cores = np.delete(cores, np.argwhere(cores==x))
+
+            close_pts = np.argwhere(distances[x,:] <= eps)
+            close_pts = close_pts.reshape(close_pts.shape[0])
+            close_pts = close_pts[self.labels[close_pts]==-1]
+
+            for pt in close_pts:
+                cores = set_label(pt, cores)
             
-
+            return cores
+        
+        self.labels = np.ones(X.shape[0]) * (-1)
+        distances = distance_matrix(X, X)
+        cores = np.argwhere((distances <= eps).sum(axis=0) > min_pts)
+        cores = cores.reshape(cores.shape[0])
+        n_cluster = 0
+        while cores.size != 0:
+            cores = set_label(np.random.choice(cores), cores)
+            n_cluster +=1
 
     def labels(self):
         return self.labels
 
 n = 100
 data = np.append(np.random.normal(3,1,(round(n/2),2)), np.random.normal(9,1.5,(round(n/2),2)), axis=0)
-plt.scatter(data[:,0], data[:,1])
 
-labels = np.ones(data.shape[0])*(-1)
-distances = distance_matrix(data,data)
-cores = np.argwhere((distances < 1).sum(axis=0)>5)
-cores = list(cores.reshape(cores.shape[0]))
-(distances[2,:] < 3).sum()
+model = dbscan()
+model.fit(data, 1.5, 5)
+
+plt.scatter(data[:,0], data[:,1], c=model.labels)

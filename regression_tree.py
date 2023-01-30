@@ -76,14 +76,16 @@ class RegressionTree():
         
         print_node(self.root)
 
-data = np.array([[1., 0.1], [4.8, 1.1], [6.1, 1.4], [5.9, 1.2], [2.1, 0.15], [1.7, 0.2], [1.2, 0.1], [2.2, 0.2], [4.3, 0.1], [2.8, 0.1], [3.2, 0.15], [4.2, 1.1], [5.3, 1.]])
+n = 100
+data = np.append(np.random.normal(3,1,(round(n/2),2)), np.random.normal(9,1.5,(round(n/2),2)), axis=0)
 
 model = RegressionTree()
-model.fit(data, min_points=5, max_depth=1)
+model.fit(data, min_points=5, max_depth=2)
 
-x = np.array([4])
-prediction = model.predict(x)
-print(f"Prediction for x = [{4}]: {round(prediction, 2)}")
-
+predictions = []
+for x in np.arange(0, 13, .2):
+    predictions.append(model.predict(np.array([x])))
+    
 plt.scatter(data[:, 0], data[:, 1])
-plt.scatter(x, prediction)
+plt.scatter(np.arange(0, 13, .2), predictions)
+

@@ -49,4 +49,6 @@ x = np.array([[1,1],[4,5]])
 lin_model = linear_model()
 lin_model.fit(X,Y,0.0001,10000)
 prediction = lin_model.predict(x)
-print(prediction)
+
+
+print(f"Prediction for (1,1) and (4,5): {prediction}")
